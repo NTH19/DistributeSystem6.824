@@ -1,0 +1,540 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 4.3
+ 
+# Built for x86_64-pc-linux-gnu
+ 
+# Copyright (C) 1988-2020 Free Software Foundation, Inc.
+ 
+# License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+ 
+# This is free software: you are free to change and redistribute it.
+ 
+# There is NO WARRANTY, to the extent permitted by law.
+ 
+
+ 
+# Make data base, printed on Wed Aug 24 14:01:40 2022
+ 
+
+# Variables
+ 
+
+ 
+# environment
+ 
+GDK_BACKEND = x11
+ 
+# environment
+ 
+LC_ALL = C
+ 
+# environment
+ 
+GNOME_SHELL_SESSION_MODE = ubuntu
+ 
+# environment
+ 
+SSH_AGENT_LAUNCHER = gnome-keyring
+ 
+# environment
+ 
+SNAP_INSTANCE_KEY = 
+ 
+# environment
+ 
+GJS_DEBUG_OUTPUT = stderr
+ 
+# environment
+ 
+LC_NAME = zh_CN.UTF-8
+ 
+# environment
+ 
+LC_NUMERIC = zh_CN.UTF-8
+ 
+# environment
+ 
+VSCODE_CWD = /home/shijiu
+ 
+# environment
+ 
+LC_ADDRESS = zh_CN.UTF-8
+ 
+# default
+ 
+MAKE_COMMAND := make
+ 
+# environment
+ 
+QT_ACCESSIBILITY = 1
+ 
+# environment
+ 
+GOPATH = /home/shijiu/go
+ 
+# automatic
+ 
+@D = $(patsubst %/,%,$(dir $@))
+ 
+# environment
+ 
+SNAP_INSTANCE_NAME = code
+ 
+# environment
+ 
+GDK_PIXBUF_MODULEDIR = /snap/code/105/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
+ 
+# environment
+ 
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+ 
+# default
+ 
+.VARIABLES := 
+ 
+# environment
+ 
+PWD = /home/shijiu/6.824
+ 
+# automatic
+ 
+%D = $(patsubst %/,%,$(dir $%))
+# environment
+XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# automatic
+%F = $(notdir $%)
+# environment
+VSCODE_CODE_CACHE_PATH = /home/shijiu/.config/Code/CachedData/e4503b30fc78200f846c62cf8091b76ff5547662
+# environment
+LANG = C
+# environment
+XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.CJVQR1
+# default
+.LOADED := 
+# default
+.INCLUDE_DIRS = /usr/local/include /usr/include /usr/include
+# makefile
+MAKEFLAGS = pqrR
+# makefile (from 'Makefile', line 6)
+LABS = " lab1 lab2a lab2b lab2c lab2d lab3a lab3b lab4a lab4b "
+# makefile
+CURDIR := /home/shijiu/6.824
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+# environment
+LESSOPEN = | /usr/bin/lesspipe %s
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+MFLAGS = -pqrR
+# environment
+SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
+# default
+.SHELLFLAGS := -c
+# environment
+WAYLAND_DISPLAY = wayland-0
+# environment
+XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# environment
+XDG_SESSION_DESKTOP = ubuntu
+# makefile (from 'Makefile', line 1)
+MAKEFILE_LIST := Makefile
+# environment
+SNAP_REEXEC = 
+# automatic
+@F = $(notdir $@)
+# environment
+VSCODE_PID = 25641
+# environment
+XDG_SESSION_TYPE = wayland
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# environment
+BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
+# environment
+SESSION_MANAGER = local/shijiu-virtual-machine:@/tmp/.ICE-unix/2103,unix/shijiu-virtual-machine:/tmp/.ICE-unix/2103
+# automatic
+*F = $(notdir $*)
+# environment
+CHROME_DESKTOP = code-url-handler.desktop
+# environment
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# environment
+VSCODE_NLS_CONFIG = {"locale":"zh-cn","availableLanguages":{"*":"zh-cn"},"_languagePackId":"cc0490d1397af23dc5bf44a96fe15dbb.zh-cn","_translationsConfigFile":"/home/shijiu/.config/Code/clp/cc0490d1397af23dc5bf44a96fe15dbb.zh-cn/tcf.json","_cacheRoot":"/home/shijiu/.config/Code/clp/cc0490d1397af23dc5bf44a96fe15dbb.zh-cn","_resolvedLanguagePackCoreLocation":"/home/shijiu/.config/Code/clp/cc0490d1397af23dc5bf44a96fe15dbb.zh-cn/e4503b30fc78200f846c62cf8091b76ff5547662","_corruptedFile":"/home/shijiu/.config/Code/clp/cc0490d1397af23dc5bf44a96fe15dbb.zh-cn/corrupted.info","_languagePackSupport":true}
+# default
+MAKE_HOST := x86_64-pc-linux-gnu
+# environment
+GNOME_DESKTOP_SESSION_ID = this-is-deprecated
+# makefile
+SHELL = /bin/sh
+# default
+MAKECMDGOALS := all
+# environment
+XMODIFIERS = @im=ibus
+# environment
+GJS_DEBUG_TOPICS = JS ERROR;JS LOG
+# environment
+SHLVL = 0
+# environment
+MAKELEVEL := 0
+# environment
+IM_CONFIG_CHECK_ENV = 1
+# default
+MAKE = $(MAKE_COMMAND)
+# environment
+SNAP_COOKIE = 3YfFcgE_7u1Ankfb_aep-Bwi9lqCISLs2sUl_on_A_4o6WaYo0Ds
+# environment
+PATH = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
+# default
+MAKEFILES := 
+# environment
+LANGUAGE = zh_CN:en
+# environment
+LC_MONETARY = zh_CN.UTF-8
+# automatic
+^F = $(notdir $^)
+# environment
+SNAP_USER_COMMON = /home/shijiu/snap/code/common
+# environment
+LC_TIME = zh_CN.UTF-8
+# environment
+SNAP = /snap/code/105
+# environment
+INVOCATION_ID = 9029b42573714d7483142166e989c0ef
+# environment
+SNAP_REVISION = 105
+# environment
+SNAP_REAL_HOME = /home/shijiu
+# environment
+USERNAME = shijiu
+# environment
+GNOME_SETUP_DISPLAY = :1
+# environment
+LC_TELEPHONE = zh_CN.UTF-8
+# environment
+LESSCLOSE = /usr/bin/lesspipe %s %s
+# automatic
+?F = $(notdir $?)
+# environment
+XDG_CURRENT_DESKTOP = Unity
+# environment
+LS_COLORS = 
+# automatic
++F = $(notdir $+)
+# environment
+DESKTOP_SESSION = ubuntu
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
+# 'override' directive
+GNUMAKEFLAGS := 
+# environment
+LOGNAME = shijiu
+# environment
+GIO_LAUNCHED_DESKTOP_FILE = /var/lib/snapd/desktop/applications/code_code.desktop
+# environment
+SNAP_ARCH = amd64
+# makefile
+.DEFAULT_GOAL := 
+# environment
+SYSTEMD_EXEC_PID = 2127
+# environment
+DISPLAY = :0
+# environment
+USER = shijiu
+# environment
+GTK_MODULES = gail:atk-bridge
+# default
+MAKE_VERSION := 4.3
+# environment
+DISABLE_WAYLAND = 1
+# environment
+SNAP_DATA = /var/snap/code/105
+# environment
+SNAP_CONTEXT = 3YfFcgE_7u1Ankfb_aep-Bwi9lqCISLs2sUl_on_A_4o6WaYo0Ds
+# environment
+MANAGERPID = 1912
+# environment
+LC_MEASUREMENT = zh_CN.UTF-8
+# environment
+GIO_LAUNCHED_DESKTOP_FILE_PID = 25596
+# environment
+_ = /snap/code/105/usr/share/code/code
+# environment
+LC_PAPER = zh_CN.UTF-8
+# environment
+XDG_RUNTIME_DIR = /run/user/1000
+# environment
+GDK_PIXBUF_MODULE_FILE = /home/shijiu/snap/code/common/.cache/gdk-pixbuf-loaders.cache
+# environment
+JOURNAL_STREAM = 8:51799
+# environment
+GOMODCACHE = /home/shijiu/go/pkg/mod
+# environment
+XDG_SESSION_CLASS = user
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+HOME = /home/shijiu
+# environment
+QT_IM_MODULE = ibus
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# environment
+VSCODE_IPC_HOOK = /run/user/1000/vscode-0d445689-1.70.2-main.sock
+# environment
+SNAP_NAME = code
+# environment
+GSETTINGS_SCHEMA_DIR = /snap/code/105/usr/share/glib-2.0/schemas
+# environment
+IM_CONFIG_PHASE = 1
+# environment
+PAPERSIZE = a4
+# environment
+GOPROXY = https://goproxy.cn
+# default
+.RECIPEPREFIX := 
+# automatic
+<F = $(notdir $<)
+# environment
+SNAP_VERSION = e4503b30
+# default
+SUFFIXES := 
+# environment
+VSCODE_CLI = 1
+# environment
+ELECTRON_NO_ATTACH_CONSOLE = 1
+# environment
+SNAP_COMMON = /var/snap/code/common
+# default
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
+# environment
+SNAP_USER_DATA = /home/shijiu/snap/code/105
+# environment
+XDG_MENU_PREFIX = gnome-
+# environment
+GDMSESSION = ubuntu
+# environment
+LC_IDENTIFICATION = zh_CN.UTF-8
+# environment
+SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
+# variable set hash-table stats:
+# Load=132/1024=13%, Rehash=0, Collisions=7/164=4%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 2051, inode 1717206): 8 files, no impossibilities.
+
+# 8 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+%: check-%
+#  recipe to execute (from 'Makefile', line 9):
+	@echo "Preparing $@-handin.tar.gz"
+	@if echo $(LABS) | grep -q " $@ " ; then \
+		echo "Tarring up your submission..." ; \
+		COPYFILE_DISABLE=1 tar cvzf $@-handin.tar.gz \
+			"--exclude=src/main/pg-*.txt" \
+			"--exclude=src/main/diskvd" \
+			"--exclude=src/mapreduce/824-mrinput-*.txt" \
+			"--exclude=src/main/mr-*" \
+			"--exclude=mrtmp.*" \
+			"--exclude=src/main/diff.out" \
+			"--exclude=src/main/mrmaster" \
+			"--exclude=src/main/mrsequential" \
+			"--exclude=src/main/mrworker" \
+			"--exclude=*.so" \
+			Makefile src; \
+		if ! test -e api.key ; then \
+			echo "Missing $(PWD)/api.key. Please create the file with your key in it or submit the $@-handin.tar.gz via the web interface."; \
+		else \
+			echo "Are you sure you want to submit $@? Enter 'yes' to continue:"; \
+			read line; \
+			if test "$$line" != "yes" ; then echo "Giving up submission"; exit; fi; \
+			if test `stat -c "%s" "$@-handin.tar.gz" 2>/dev/null || stat -f "%z" "$@-handin.tar.gz"` -ge 20971520 ; then echo "File exceeds 20MB."; exit; fi; \
+			cat api.key | tr -d '\n' > .api.key.trimmed ; \
+			curl --silent --fail --show-error -F file=@$@-handin.tar.gz -F "key=<.api.key.trimmed" \
+			https://6824.scripts.mit.edu/2021/handin.py/upload > /dev/null || { \
+				echo ; \
+				echo "Submit seems to have failed."; \
+				echo "Please upload the tarball manually on the submission website."; } \
+		fi; \
+	else \
+		echo "Bad target $@. Usage: make [$(LABS)]"; \
+	fi
+
+check-%:
+#  recipe to execute (from 'Makefile', line 44):
+	@echo "Checking that your submission builds correctly..."
+	@./.check-build git://g.csail.mit.edu/6.824-golabs-2021 $(patsubst check-%,%,$@)
+
+# 2 implicit rules, 0 (0.0%) terminal.
+# Files
+
+check-all:
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'all'
+#  File is an intermediate prerequisite.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := check-all
+# automatic
+# * := all
+# automatic
+# < := 
+# automatic
+# + := 
+# automatic
+# % := 
+# automatic
+# ^ := 
+# automatic
+# ? := 
+# automatic
+ 
+# | := 
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=1/12=8%
+#  recipe to execute (from 'Makefile', line 44):
+	@echo "Checking that your submission builds correctly..."
+	@./.check-build git://g.csail.mit.edu/6.824-golabs-2021 $(patsubst check-%,%,$@)
+
+Makefile: check-Makefile
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'Makefile'
+#  Last modified 2022-08-23 19:46:06.86172035
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 9):
+	@echo "Preparing $@-handin.tar.gz"
+	@if echo $(LABS) | grep -q " $@ " ; then \
+		echo "Tarring up your submission..." ; \
+		COPYFILE_DISABLE=1 tar cvzf $@-handin.tar.gz \
+			"--exclude=src/main/pg-*.txt" \
+			"--exclude=src/main/diskvd" \
+			"--exclude=src/mapreduce/824-mrinput-*.txt" \
+			"--exclude=src/main/mr-*" \
+			"--exclude=mrtmp.*" \
+			"--exclude=src/main/diff.out" \
+			"--exclude=src/main/mrmaster" \
+			"--exclude=src/main/mrsequential" \
+			"--exclude=src/main/mrworker" \
+			"--exclude=*.so" \
+			Makefile src; \
+		if ! test -e api.key ; then \
+			echo "Missing $(PWD)/api.key. Please create the file with your key in it or submit the $@-handin.tar.gz via the web interface."; \
+		else \
+			echo "Are you sure you want to submit $@? Enter 'yes' to continue:"; \
+			read line; \
+			if test "$$line" != "yes" ; then echo "Giving up submission"; exit; fi; \
+			if test `stat -c "%s" "$@-handin.tar.gz" 2>/dev/null || stat -f "%z" "$@-handin.tar.gz"` -ge 20971520 ; then echo "File exceeds 20MB."; exit; fi; \
+			cat api.key | tr -d '\n' > .api.key.trimmed ; \
+			curl --silent --fail --show-error -F file=@$@-handin.tar.gz -F "key=<.api.key.trimmed" \
+			https://6824.scripts.mit.edu/2021/handin.py/upload > /dev/null || { \
+				echo ; \
+				echo "Submit seems to have failed."; \
+				echo "Please upload the tarball manually on the submission website."; } \
+		fi; \
+	else \
+		echo "Bad target $@. Usage: make [$(LABS)]"; \
+	fi
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+all: check-all
+#  Command line target.
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'all'
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/3=0%
+#  recipe to execute (from 'Makefile', line 9):
+	@echo "Preparing $@-handin.tar.gz"
+	@if echo $(LABS) | grep -q " $@ " ; then \
+		echo "Tarring up your submission..." ; \
+		COPYFILE_DISABLE=1 tar cvzf $@-handin.tar.gz \
+			"--exclude=src/main/pg-*.txt" \
+			"--exclude=src/main/diskvd" \
+			"--exclude=src/mapreduce/824-mrinput-*.txt" \
+			"--exclude=src/main/mr-*" \
+			"--exclude=mrtmp.*" \
+			"--exclude=src/main/diff.out" \
+			"--exclude=src/main/mrmaster" \
+			"--exclude=src/main/mrsequential" \
+			"--exclude=src/main/mrworker" \
+			"--exclude=*.so" \
+			Makefile src; \
+		if ! test -e api.key ; then \
+			echo "Missing $(PWD)/api.key. Please create the file with your key in it or submit the $@-handin.tar.gz via the web interface."; \
+		else \
+			echo "Are you sure you want to submit $@? Enter 'yes' to continue:"; \
+			read line; \
+			if test "$$line" != "yes" ; then echo "Giving up submission"; exit; fi; \
+			if test `stat -c "%s" "$@-handin.tar.gz" 2>/dev/null || stat -f "%z" "$@-handin.tar.gz"` -ge 20971520 ; then echo "File exceeds 20MB."; exit; fi; \
+			cat api.key | tr -d '\n' > .api.key.trimmed ; \
+			curl --silent --fail --show-error -F file=@$@-handin.tar.gz -F "key=<.api.key.trimmed" \
+			https://6824.scripts.mit.edu/2021/handin.py/upload > /dev/null || { \
+				echo ; \
+				echo "Submit seems to have failed."; \
+				echo "Please upload the tarball manually on the submission website."; } \
+		fi; \
+	else \
+		echo "Bad target $@. Usage: make [$(LABS)]"; \
+	fi
+
+check-%:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+check-Makefile:
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'Makefile'
+#  File is an intermediate prerequisite.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 44):
+	@echo "Checking that your submission builds correctly..."
+	@./.check-build git://g.csail.mit.edu/6.824-golabs-2021 $(patsubst check-%,%,$@)
+
+.PHONY: check-%
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# files hash-table stats:
+# Load=8/1024=1%, Rehash=0, Collisions=0/33=0%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 1 (0) / strings = 18 / storage = 152 B / avg = 8 B
+# current buf: size = 8162 B / used = 152 B / count = 18 / avg = 8 B
+
+# strcache performance: lookups = 33 / hit rate = 45%
+# hash-table stats:
+# Load=18/8192=0%, Rehash=0, Collisions=3/33=9%
+# Finished Make data base on Wed Aug 24 14:01:40 2022
+
+ 
