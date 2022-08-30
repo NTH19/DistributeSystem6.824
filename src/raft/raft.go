@@ -252,12 +252,20 @@ func (rf *Raft) sendRequestVote(server int, args *RequestVoteArgs, reply *Reques
 }
 
 type AppendEntriesArgs struct {
-	Term     int
-	LeaderId int
+	Term         int
+	LeaderId     int
+	PrevLogIndex int
+	PrevLogTerm  int
+	Entries      []Entry
 }
 type AppendEntriesReply struct {
 	HasSuccess bool
 	Term       int
+	QuickIndex int
+}
+
+func (rf *Raft) getFirstLog() Entry {
+	return rf.logs[0]
 }
 
 func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply) {
@@ -274,44 +282,110 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 			rf.ChangeState(Follower)
 		}
 	}
+	//DPrintf("APPENTRIES NODE %v", rf.me)
 	rf.electionTimer.Reset(RandomizedElectionTimeout())
+	rf.ChangeState(Follower)
+	if args.PrevLogIndex < rf.getFirstLog().Index {
+		reply.Term, reply.HasSuccess = rf.currentTerm, false
+		return
+	}
+	if !(args.PrevLogIndex <= rf.getLastLog().Index && args.PrevLogTerm == rf.logs[args.PrevLogIndex-rf.getFirstLog().Index].Term) {
+		reply.Term, reply.HasSuccess = rf.currentTerm, false
+	}
+	firstIndex := rf.getFirstLog().Index
+	for index, entry := range args.Entries {
+		if entry.Index-firstIndex >= len(rf.logs) || rf.logs[entry.Index-firstIndex].Term != entry.Term {
+			rf.logs = append(rf.logs[:entry.Index-firstIndex], args.Entries[index:]...)
+			break
+		}
+	}
+
+	//rf.advanceCommitIndexForFollower(request.LeaderCommit)
 
 	reply.HasSuccess = true
 	reply.Term = rf.currentTerm
 
 }
+
+type InstallSnapshotResponse struct {
+}
+type InstallSnapshotRequest struct {
+}
+
+func (rf *Raft) handleAppendEntriesResponse(peer int, args *AppendEntriesArgs, reply *AppendEntriesReply) {
+	//DPrintf("Node %vhandle Append Entries %+v", rf.me, reply)
+	if reply.HasSuccess {
+		if len(args.Entries) != 0 {
+			rf.nextIndex[peer] = args.Entries[len(args.Entries)-1].Index + 1
+			rf.matchIndex[peer] = rf.nextIndex[peer] - 1
+		}
+	} else if reply.Term > rf.currentTerm {
+		rf.currentTerm = reply.Term
+		rf.ChangeState(Follower)
+	} else {
+		rf.nextIndex[peer] -= 1
+		rf.matchIndex[peer] -= 1
+	}
+}
+func (rf *Raft) genInstallSnapshotRequest() *InstallSnapshotRequest {
+	return &InstallSnapshotRequest{}
+}
+func (rf *Raft) sendInstallSnapshot(peer int, args *InstallSnapshotRequest, reply *InstallSnapshotResponse) bool {
+	return true
+}
+func (rf *Raft) handleInstallSnapshotResponse(peer int, args *InstallSnapshotRequest, reply *InstallSnapshotResponse) {
+
+}
+func (rf *Raft) genAppendEntriesRequest(peer int) *AppendEntriesArgs {
+	return &AppendEntriesArgs{
+		Term:         rf.currentTerm,
+		PrevLogIndex: rf.matchIndex[peer],
+		PrevLogTerm:  rf.logs[rf.matchIndex[peer]-rf.getFirstLog().Index].Term,
+		Entries:      rf.logs[rf.nextIndex[peer]-rf.getFirstLog().Index:],
+	}
+}
+func (rf *Raft) replicateOneRound(peer int) {
+	rf.mu.RLock()
+	if rf.state != Leader {
+		rf.mu.RUnlock()
+		return
+	}
+	prevLogIndex := rf.matchIndex[peer]
+	if prevLogIndex < rf.getFirstLog().Index {
+		// only snapshot can catch up
+		request := rf.genInstallSnapshotRequest()
+		rf.mu.RUnlock()
+		response := new(InstallSnapshotResponse)
+		if rf.sendInstallSnapshot(peer, request, response) {
+			rf.mu.Lock()
+			rf.handleInstallSnapshotResponse(peer, request, response)
+			rf.mu.Unlock()
+		}
+	} else {
+		rf.mu.RUnlock()
+		for {
+			rf.mu.RLock()
+			if rf.state != Leader {
+				rf.mu.RUnlock()
+				return
+			}
+			request := rf.genAppendEntriesRequest(peer)
+			rf.mu.RUnlock()
+			response := new(AppendEntriesReply)
+			if rf.sendAppendEntries(peer, request, response) {
+				rf.mu.Lock()
+				rf.handleAppendEntriesResponse(peer, request, response)
+				rf.mu.Unlock()
+				if response.HasSuccess {
+					return
+				}
+			}
+		}
+	}
+}
 func (rf *Raft) sendAppendEntries(id int, args *AppendEntriesArgs, reply *AppendEntriesReply) bool {
 	ok := rf.peers[id].Call("Raft.AppendEntries", args, reply)
 	return ok
-}
-func (rf *Raft) broadcastHeartbeat() {
-	rf.heartbeatTimer.Reset(StableHeartbeatTimeout())
-
-	for i := 0; i < len(rf.peers); i++ {
-		if i == rf.me {
-			continue
-		}
-		args := AppendEntriesArgs{
-			Term:     rf.currentTerm,
-			LeaderId: rf.me,
-		}
-		go func(id int) {
-
-			var reply AppendEntriesReply
-			if rf.sendAppendEntries(id, &args, &reply) {
-				if !reply.HasSuccess {
-					rf.mu.Lock()
-					if reply.Term > rf.currentTerm {
-						rf.ChangeState(Follower)
-						rf.currentTerm = reply.Term
-						rf.persist()
-						return
-					}
-					rf.mu.Unlock()
-				}
-			}
-		}(i)
-	}
 }
 
 //
@@ -338,7 +412,7 @@ func (rf *Raft) Start(command interface{}) (int, int, bool) {
 		return -1, -1, false
 	}
 	entry := rf.appendLogEntry(command)
-	rf.broadcastHeartbeat()
+	rf.BroadcastHeartbeat(false)
 	rf.mu.Unlock()
 	index = entry.Index
 	term = entry.Term
@@ -388,16 +462,18 @@ func (rf *Raft) ticker() {
 		select {
 		case <-rf.electionTimer.C:
 			rf.mu.Lock()
-			rf.ChangeState(Candidate)
-			rf.currentTerm += 1
-			DPrintf("Start Election")
-			rf.StartElection()
+			if rf.state != Leader {
+				rf.ChangeState(Candidate)
+				rf.currentTerm += 1
+				DPrintf("Start Election")
+				rf.StartElection()
+			}
 			rf.electionTimer.Reset(RandomizedElectionTimeout())
 			rf.mu.Unlock()
 		case <-rf.heartbeatTimer.C:
 			rf.mu.Lock()
 			if rf.state == Leader {
-				rf.broadcastHeartbeat()
+				rf.BroadcastHeartbeat(true)
 			}
 			rf.mu.Unlock()
 		}
@@ -415,7 +491,7 @@ func (rf *Raft) genRequestVoteRequest() *RequestVoteArgs {
 
 func (rf *Raft) StartElection() {
 	request := rf.genRequestVoteRequest()
-	DPrintf("{Node %v} starts election with RequestVoteRequest %v", rf.me, request)
+	DPrintf("{Node %v} starts election with RequestVoteRequest %+v", rf.me, request)
 	// use Closure
 	grantedVotes := 1
 	rf.votedFor = rf.me
@@ -429,14 +505,14 @@ func (rf *Raft) StartElection() {
 			if rf.sendRequestVote(peer, request, response) {
 				rf.mu.Lock()
 				defer rf.mu.Unlock()
-				DPrintf("{Node %v} receives RequestVoteResponse %v from {Node %v} after sending RequestVoteRequest %v in term %v", rf.me, response, peer, request, rf.currentTerm)
+				DPrintf("{Node %v} receives RequestVoteResponse %v from {Node %v} after sending RequestVoteRequest %+v in term %v", rf.me, response, peer, request, rf.currentTerm)
 				if rf.currentTerm == request.Term && rf.state == Candidate {
 					if response.VoteGranted {
 						grantedVotes += 1
 						if grantedVotes > len(rf.peers)/2 {
 							DPrintf("{Node %v} receives majority votes in term %v", rf.me, rf.currentTerm)
 							rf.ChangeState(Leader)
-							rf.broadcastHeartbeat()
+							rf.BroadcastHeartbeat(true)
 						}
 					} else if response.Term > rf.currentTerm {
 						DPrintf("{Node %v} finds a new leader {Node %v} with term %v and steps down in term %v", rf.me, peer, response.Term, rf.currentTerm)
@@ -449,8 +525,40 @@ func (rf *Raft) StartElection() {
 		}(peer)
 	}
 }
-func (rf *Raft) replicator(i int) {
-
+func (rf *Raft) BroadcastHeartbeat(isHeartBeat bool) {
+	if isHeartBeat {
+		rf.heartbeatTimer.Reset(StableHeartbeatTimeout())
+	}
+	for peer := range rf.peers {
+		if peer == rf.me {
+			continue
+		}
+		if isHeartBeat {
+			// need sending at once to maintain leadership
+			go rf.replicateOneRound(peer)
+		} else {
+			// just signal replicator goroutine to send entries in batch
+			rf.replicatorCond[peer].Signal()
+		}
+	}
+}
+func (rf *Raft) needReplicating(peer int) bool {
+	rf.mu.RLock()
+	defer rf.mu.RUnlock()
+	return rf.state == Leader && rf.matchIndex[peer] < rf.getLastLog().Index
+}
+func (rf *Raft) replicator(peer int) {
+	rf.replicatorCond[peer].L.Lock()
+	defer rf.replicatorCond[peer].L.Unlock()
+	for rf.killed() == false {
+		// if there is no need to replicate entries for this peer, just release CPU and wait other goroutine's signal if service adds new Command
+		// if this peer needs replicating entries, this goroutine will call replicateOneRound(peer) multiple times until this peer catches up, and then wait
+		for !rf.needReplicating(peer) {
+			rf.replicatorCond[peer].Wait()
+		}
+		// maybe a pipeline mechanism is better to trade-off the memory usage and catch up time
+		rf.replicateOneRound(peer)
+	}
 }
 func (rf *Raft) applier() {
 
