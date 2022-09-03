@@ -5,9 +5,8 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
- 
 
-# Make data base, printed on Mon Aug 29 17:51:45 2022
+# Make data base, printed on Sat Sep  3 18:12:25 2022
 
 # Variables
 
@@ -42,7 +41,7 @@ GOPATH = /home/shijiu/go
 # environment
 SNAP_INSTANCE_NAME = code
 # environment
-GDK_PIXBUF_MODULEDIR = /snap/code/105/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
+GDK_PIXBUF_MODULEDIR = /snap/code/106/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # default
@@ -58,11 +57,11 @@ XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/d
 # automatic
 %F = $(notdir $%)
 # environment
-VSCODE_CODE_CACHE_PATH = /home/shijiu/.config/Code/CachedData/e4503b30fc78200f846c62cf8091b76ff5547662
+VSCODE_CODE_CACHE_PATH = /home/shijiu/.config/Code/CachedData/784b0177c56c607789f9638da7b6bf3230d47a8c
 # environment
 LANG = C
 # environment
-XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.KSYLR1
+XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.WBACS1
 # default
 .LOADED := 
 # default
@@ -86,6 +85,7 @@ SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # default
 .SHELLFLAGS := -c
 # environment
+ 
 WAYLAND_DISPLAY = wayland-0
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
@@ -100,16 +100,15 @@ SNAP_REEXEC =
 # automatic
 @F = $(notdir $@)
 # environment
-VSCODE_PID = 19269
+VSCODE_PID = 20568
 # environment
 XDG_SESSION_TYPE = wayland
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
- 
 # environment
 BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
 # environment
-SESSION_MANAGER = local/shijiu-virtual-machine:@/tmp/.ICE-unix/2077,unix/shijiu-virtual-machine:/tmp/.ICE-unix/2077
+SESSION_MANAGER = local/shijiu-virtual-machine:@/tmp/.ICE-unix/2306,unix/shijiu-virtual-machine:/tmp/.ICE-unix/2306
 # automatic
 *F = $(notdir $*)
 # environment
@@ -119,7 +118,7 @@ DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
 # environment
-VSCODE_NLS_CONFIG = {"locale":"zh-cn","availableLanguages":{"*":"zh-cn"},"_languagePackId":"cc0490d1397af23dc5bf44a96fe15dbb.zh-cn","_translationsConfigFile":"/home/shijiu/.config/Code/clp/cc0490d1397af23dc5bf44a96fe15dbb.zh-cn/tcf.json","_cacheRoot":"/home/shijiu/.config/Code/clp/cc0490d1397af23dc5bf44a96fe15dbb.zh-cn","_resolvedLanguagePackCoreLocation":"/home/shijiu/.config/Code/clp/cc0490d1397af23dc5bf44a96fe15dbb.zh-cn/e4503b30fc78200f846c62cf8091b76ff5547662","_corruptedFile":"/home/shijiu/.config/Code/clp/cc0490d1397af23dc5bf44a96fe15dbb.zh-cn/corrupted.info","_languagePackSupport":true}
+VSCODE_NLS_CONFIG = {"locale":"zh-cn","availableLanguages":{"*":"zh-cn"},"_languagePackId":"cc0490d1397af23dc5bf44a96fe15dbb.zh-cn","_translationsConfigFile":"/home/shijiu/.config/Code/clp/cc0490d1397af23dc5bf44a96fe15dbb.zh-cn/tcf.json","_cacheRoot":"/home/shijiu/.config/Code/clp/cc0490d1397af23dc5bf44a96fe15dbb.zh-cn","_resolvedLanguagePackCoreLocation":"/home/shijiu/.config/Code/clp/cc0490d1397af23dc5bf44a96fe15dbb.zh-cn/784b0177c56c607789f9638da7b6bf3230d47a8c","_corruptedFile":"/home/shijiu/.config/Code/clp/cc0490d1397af23dc5bf44a96fe15dbb.zh-cn/corrupted.info","_languagePackSupport":true}
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
@@ -157,11 +156,11 @@ SNAP_USER_COMMON = /home/shijiu/snap/code/common
 # environment
 LC_TIME = zh_CN.UTF-8
 # environment
-SNAP = /snap/code/105
+SNAP = /snap/code/106
 # environment
-INVOCATION_ID = abee3f1445484f1280de2bd4681aca0d
+INVOCATION_ID = 58fd3c22cc7348ac9fa4928478d2ee7b
 # environment
-SNAP_REVISION = 105
+SNAP_REVISION = 106
 # environment
 SNAP_REAL_HOME = /home/shijiu
 # environment
@@ -195,7 +194,7 @@ SNAP_ARCH = amd64
 # makefile
 .DEFAULT_GOAL := 
 # environment
-SYSTEMD_EXEC_PID = 2108
+SYSTEMD_EXEC_PID = 2336
 # environment
 DISPLAY = :0
 # environment
@@ -205,19 +204,17 @@ GTK_MODULES = gail:atk-bridge
 # default
 MAKE_VERSION := 4.3
 # environment
-DISABLE_WAYLAND = 1
-# environment
-SNAP_DATA = /var/snap/code/105
+SNAP_DATA = /var/snap/code/106
 # environment
 SNAP_CONTEXT = 3YfFcgE_7u1Ankfb_aep-Bwi9lqCISLs2sUl_on_A_4o6WaYo0Ds
 # environment
-MANAGERPID = 1920
+MANAGERPID = 2100
 # environment
 LC_MEASUREMENT = zh_CN.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 19227
+GIO_LAUNCHED_DESKTOP_FILE_PID = 20522
 # environment
-_ = /snap/code/105/usr/share/code/code
+_ = /snap/code/106/usr/share/code/code
 # environment
 LC_PAPER = zh_CN.UTF-8
 # environment
@@ -225,7 +222,7 @@ XDG_RUNTIME_DIR = /run/user/1000
 # environment
 GDK_PIXBUF_MODULE_FILE = /home/shijiu/snap/code/common/.cache/gdk-pixbuf-loaders.cache
 # environment
-JOURNAL_STREAM = 8:52640
+JOURNAL_STREAM = 8:54536
 # environment
 GOMODCACHE = /home/shijiu/go/pkg/mod
 # environment
@@ -239,11 +236,11 @@ QT_IM_MODULE = ibus
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-0d445689-1.70.2-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-0d445689-1.71.0-main.sock
 # environment
 SNAP_NAME = code
 # environment
-GSETTINGS_SCHEMA_DIR = /snap/code/105/usr/share/glib-2.0/schemas
+GSETTINGS_SCHEMA_DIR = /snap/code/106/usr/share/glib-2.0/schemas
 # environment
 IM_CONFIG_PHASE = 1
 # environment
@@ -255,7 +252,7 @@ GOPROXY = https://goproxy.cn
 # automatic
 <F = $(notdir $<)
 # environment
-SNAP_VERSION = e4503b30
+SNAP_VERSION = 784b0177
 # default
 SUFFIXES := 
 # environment
@@ -265,10 +262,10 @@ ELECTRON_NO_ATTACH_CONSOLE = 1
 # environment
 SNAP_COMMON = /var/snap/code/common
 # default
- 
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
 # environment
-SNAP_USER_DATA = /home/shijiu/snap/code/105
+ 
+SNAP_USER_DATA = /home/shijiu/snap/code/106
 # environment
 XDG_MENU_PREFIX = gnome-
 # environment
@@ -278,7 +275,7 @@ LC_IDENTIFICATION = zh_CN.UTF-8
 # environment
 SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
 # variable set hash-table stats:
-# Load=132/1024=13%, Rehash=0, Collisions=7/164=4%
+# Load=131/1024=13%, Rehash=0, Collisions=7/163=4%
 
 # Pattern-specific Variable Values
 
@@ -411,6 +408,7 @@ Makefile: check-Makefile
 #  File has not been updated.
 
 all: check-all
+ 
 #  Command line target.
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: 'all'
@@ -419,7 +417,6 @@ all: check-all
 #  Needs to be updated (-q is set).
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/3=0%
- 
 #  recipe to execute (from 'Makefile', line 9):
 	@echo "Preparing $@-handin.tar.gz"
 	@if echo $(LABS) | grep -q " $@ " ; then \
@@ -489,6 +486,6 @@ check-Makefile:
 # strcache performance: lookups = 33 / hit rate = 45%
 # hash-table stats:
 # Load=18/8192=0%, Rehash=0, Collisions=3/33=9%
-# Finished Make data base on Mon Aug 29 17:51:45 2022
+# Finished Make data base on Sat Sep  3 18:12:25 2022
 
  

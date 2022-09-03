@@ -8,39 +8,25 @@ package shardkv
 // talks to the group that holds the key's shard.
 //
 
-import "6.824/labrpc"
-import "crypto/rand"
-import "math/big"
-import "6.824/shardctrler"
-import "time"
+import (
+	"sync"
+	"sync/atomic"
+	"time"
 
-//
-// which shard is a key in?
-// please use this function,
-// and please do not change it.
-//
-func key2shard(key string) int {
-	shard := 0
-	if len(key) > 0 {
-		shard = int(key[0])
-	}
-	shard %= shardctrler.NShards
-	return shard
-}
+	"6.824/labrpc"
+	"6.824/shardctrler"
+)
 
-func nrand() int64 {
-	max := big.NewInt(int64(1) << 62)
-	bigx, _ := rand.Int(rand.Reader, max)
-	x := bigx.Int64()
-	return x
-}
-
-type Clerk struct {
-	sm       *shardctrler.Clerk
-	config   shardctrler.Config
+type Client struct {
+	mu       sync.Mutex
+	scc      *shardctrler.Client
+	conf     shardctrler.Config
 	make_end func(string) *labrpc.ClientEnd
 	// You will have to modify this struct.
+	ClientInfo
 }
+
+const CLIENT_REQUEST_INTERVAL = 100 * time.Millisecond // 客户端发起新一轮请求的间隔时间
 
 //
 // the tester calls MakeClerk.
@@ -51,11 +37,12 @@ type Clerk struct {
 // Config.Groups[gid][i] into a labrpc.ClientEnd on which you can
 // send RPCs.
 //
-func MakeClerk(ctrlers []*labrpc.ClientEnd, make_end func(string) *labrpc.ClientEnd) *Clerk {
-	ck := new(Clerk)
-	ck.sm = shardctrler.MakeClerk(ctrlers)
+func MakeClerk(ctrlers []*labrpc.ClientEnd, make_end func(string) *labrpc.ClientEnd) *Client {
+	ck := new(Client)
+	ck.scc = shardctrler.MakeClient(ctrlers)
 	ck.make_end = make_end
 	// You'll have to add code here.
+	ck.Uid = generateclientId()
 	return ck
 }
 
@@ -65,73 +52,108 @@ func MakeClerk(ctrlers []*labrpc.ClientEnd, make_end func(string) *labrpc.Client
 // keeps trying forever in the face of all other errors.
 // You will have to modify this function.
 //
-func (ck *Clerk) Get(key string) string {
-	args := GetArgs{}
-	args.Key = key
-
+func (c *Client) Get(key string) string {
+	req := GetRequest{
+		Key: key,
+		ClientInfo: ClientInfo{
+			Uid: c.Uid,
+			Seq: atomic.AddInt64(&c.Seq, 1),
+		},
+	}
+	s := key2shard(key)
+	c.info("开始Get %+v", req)
+	defer c.info("成功Get %+v", req)
 	for {
-		shard := key2shard(key)
-		gid := ck.config.Shards[shard]
-		if servers, ok := ck.config.Groups[gid]; ok {
-			// try each server for the shard.
-			for si := 0; si < len(servers); si++ {
-				srv := ck.make_end(servers[si])
-				var reply GetReply
-				ok := srv.Call("ShardKV.Get", &args, &reply)
-				if ok && (reply.Err == OK || reply.Err == ErrNoKey) {
-					return reply.Value
+		c.mu.Lock()
+		gid := c.conf.Shards[s]
+		servers, ok := c.conf.Groups[gid]
+		c.mu.Unlock()
+		if ok {
+		round:
+			for _, srvi := range servers {
+				var resp GetResponse
+				srv := c.make_end(srvi)
+				srv.Call("ShardKV.Get", &req, &resp)
+				resp.Key = req.Key
+				switch resp.RPCInfo {
+				case SUCCESS:
+					return resp.Value
+				case WRONG_GROUP:
+					break round
+				default:
 				}
-				if ok && (reply.Err == ErrWrongGroup) {
-					break
-				}
-				// ... not ok, or ErrWrongLeader
 			}
 		}
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(CLIENT_REQUEST_INTERVAL)
 		// ask controler for the latest configuration.
-		ck.config = ck.sm.Query(-1)
+		config := c.scc.Query(-1)
+		c.mu.Lock()
+		c.conf = config
+		c.mu.Unlock()
 	}
-
-	return ""
 }
 
 //
 // shared by Put and Append.
 // You will have to modify this function.
 //
-func (ck *Clerk) PutAppend(key string, value string, op string) {
-	args := PutAppendArgs{}
-	args.Key = key
-	args.Value = value
-	args.Op = op
+func (c *Client) PutAppend(key string, value string, op string) {
 
-
+	req := PutAppendRequest{
+		Key:   key,
+		Value: value,
+		ClientInfo: ClientInfo{
+			Uid: c.Uid,
+			Seq: atomic.AddInt64(&c.Seq, 1),
+		},
+		OpType: op,
+	}
+	s := key2shard(key)
+	c.info("开始PutAppend %+v", req)
+	defer c.info("成功PutAppend %+v", req)
 	for {
-		shard := key2shard(key)
-		gid := ck.config.Shards[shard]
-		if servers, ok := ck.config.Groups[gid]; ok {
-			for si := 0; si < len(servers); si++ {
-				srv := ck.make_end(servers[si])
-				var reply PutAppendReply
-				ok := srv.Call("ShardKV.PutAppend", &args, &reply)
-				if ok && reply.Err == OK {
+		c.mu.Lock()
+		gid := c.conf.Shards[s]
+		servers, ok := c.conf.Groups[gid]
+		c.mu.Unlock()
+		if ok {
+		round:
+			for _, srvi := range servers {
+				var resp PutAppendResponse
+				srv := c.make_end(srvi)
+				srv.Call("ShardKV.PutAppend", &req, &resp)
+				switch resp.RPCInfo {
+				case SUCCESS:
 					return
+				case DUPLICATE_REQUEST:
+					return
+				case WRONG_GROUP:
+					break round
+				default:
+
 				}
-				if ok && reply.Err == ErrWrongGroup {
-					break
-				}
-				// ... not ok, or ErrWrongLeader
 			}
 		}
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(CLIENT_REQUEST_INTERVAL)
 		// ask controler for the latest configuration.
-		ck.config = ck.sm.Query(-1)
+		config := c.scc.Query(-1)
+		c.mu.Lock()
+		c.conf = config
+		c.mu.Unlock()
 	}
 }
 
-func (ck *Clerk) Put(key string, value string) {
+func (ck *Client) Put(key string, value string) {
 	ck.PutAppend(key, value, "Put")
 }
-func (ck *Clerk) Append(key string, value string) {
+func (ck *Client) Append(key string, value string) {
 	ck.PutAppend(key, value, "Append")
+}
+
+var (
+	kvClientGlobalId int64
+)
+
+func generateclientId() int64 {
+	return atomic.AddInt64(&kvClientGlobalId, 1)
 }
