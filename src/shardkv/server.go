@@ -1,101 +1,130 @@
 package shardkv
 
+import (
+	"sync"
+	"time"
 
-import "6.824/labrpc"
-import "6.824/raft"
-import "sync"
-import "6.824/labgob"
-
-
-
-type Op struct {
-	// Your definitions here.
-	// Field names must start with capital letters,
-	// otherwise RPC will break.
-}
+	"6.824/labrpc"
+	"6.824/raft"
+	"6.824/shardctrler"
+)
 
 type ShardKV struct {
-	mu           sync.Mutex
-	me           int
+	// 互斥锁相关字段
+	mu       sync.Mutex
+	locktime time.Time
+	lockname string
+
+	// 集群相关信息
+	me       int                 // 该节点在所在集群中的Id
+	gid      int                 // 所在集群的全局Id
+	scc      *shardctrler.Client // 配置集群的客户端
+	make_end func(string) *labrpc.ClientEnd
+
+	// 持久化信息
+	clientSeq   [shardctrler.NShards]map[int64]int64   // sequence number for each known client
+	shardedData [shardctrler.NShards]map[string]string // state machine
+
+	conf shardctrler.Config // latest config
+
+	shardState [shardctrler.NShards]int
+
 	rf           *raft.Raft
 	applyCh      chan raft.ApplyMsg
-	make_end     func(string) *labrpc.ClientEnd
-	gid          int
-	ctrlers      []*labrpc.ClientEnd
 	maxraftstate int // snapshot if log grows this big
+	dead         int32
 
-	// Your definitions here.
+	sigChans map[int]map[int]chan GeneralOutput
 }
 
+// Get returns: APPLY_TIMEOUT/FAILED_REQUEST/SUCCESS/DUPLICATE_REQUEST
+func (kv *ShardKV) Get(args *GetRequest, reply *GetResponse) {
+	defer func() {
+		kv.lock("Get RPC returns")
+		kv.info("Get RPC returns, %+v", *reply)
+		kv.unlock()
+	}()
 
-func (kv *ShardKV) Get(args *GetArgs, reply *GetReply) {
-	// Your code here.
+	in := GeneralInput{
+		OpType:     GET,
+		Key:        args.Key,
+		ClientInfo: args.ClientInfo,
+	}
+
+	out := kv.tryApplyAndGetResult(in)
+	reply.Key = args.Key
+	reply.ClientInfo = args.ClientInfo
+	reply.RPCInfo = out.RPCInfo
+	reply.Value = out.Value
 }
 
-func (kv *ShardKV) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
-	// Your code here.
+// PutAppend returns: APPLY_TIMEOUT/FAILED_REQUEST/SUCCESS/DUPLICATE_REQUEST
+func (kv *ShardKV) PutAppend(args *PutAppendRequest, reply *PutAppendResponse) {
+	defer func() {
+		kv.lock("PutAppend RPC returns")
+		kv.info("PutAppend RPC returns, %+v", *reply)
+		kv.unlock()
+	}()
+
+	in := GeneralInput{
+		OpType:     args.OpType,
+		Key:        args.Key,
+		Value:      args.Value,
+		ClientInfo: args.ClientInfo,
+	}
+
+	out := kv.tryApplyAndGetResult(in)
+	reply.Key = args.Key
+	reply.ClientInfo = args.ClientInfo
+	reply.OpType = args.OpType
+	reply.RPCInfo = out.RPCInfo
+	reply.Value = out.Value
 }
 
-//
-// the tester calls Kill() when a ShardKV instance won't
-// be needed again. you are not required to do anything
-// in Kill(), but it might be convenient to (for example)
-// turn off debug output from this instance.
-//
-func (kv *ShardKV) Kill() {
-	kv.rf.Kill()
-	// Your code here, if desired.
+// ReceiveShard returns: APPLY_TIMEOUT/FAILED_REQUEST/SUCCESS/DUPLICATE_REQUEST
+func (kv *ShardKV) ReceiveShard(args *ReceiveShardRequest, reply *ReceiveShardResponse) {
+	defer func() {
+		kv.lock("ReceiveShard RPC returns")
+		kv.info("ReceiveShard RPC returns, %+v", *reply)
+		kv.unlock()
+	}()
+
+	in := GeneralInput{
+		OpType: LOAD_SHARD,
+		Input:  args.SingleShardData,
+	}
+	out := kv.tryApplyAndGetResult(in)
+	reply.SingleShardInfo = args.SingleShardInfo
+	reply.RPCInfo = out.RPCInfo
 }
 
-
-//
-// servers[] contains the ports of the servers in this group.
-//
-// me is the index of the current server in servers[].
-//
-// the k/v server should store snapshots through the underlying Raft
-// implementation, which should call persister.SaveStateAndSnapshot() to
-// atomically save the Raft state along with the snapshot.
-//
-// the k/v server should snapshot when Raft's saved state exceeds
-// maxraftstate bytes, in order to allow Raft to garbage-collect its
-// log. if maxraftstate is -1, you don't need to snapshot.
-//
-// gid is this group's GID, for interacting with the shardctrler.
-//
-// pass ctrlers[] to shardctrler.MakeClerk() so you can send
-// RPCs to the shardctrler.
-//
-// make_end(servername) turns a server name from a
-// Config.Groups[gid][i] into a labrpc.ClientEnd on which you can
-// send RPCs. You'll need this to send RPCs to other groups.
-//
-// look at client.go for examples of how to use ctrlers[]
-// and make_end() to send RPCs to the group owning a specific shard.
-//
-// StartServer() must return quickly, so it should start goroutines
-// for any long-running work.
-//
 func StartServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persister, maxraftstate int, gid int, ctrlers []*labrpc.ClientEnd, make_end func(string) *labrpc.ClientEnd) *ShardKV {
 	// call labgob.Register on structures you want
 	// Go's RPC library to marshall/unmarshall.
-	labgob.Register(Op{})
-
 	kv := new(ShardKV)
 	kv.me = me
 	kv.maxraftstate = maxraftstate
 	kv.make_end = make_end
 	kv.gid = gid
-	kv.ctrlers = ctrlers
-
-	// Your initialization code here.
-
-	// Use something like this to talk to the shardctrler:
-	// kv.mck = shardctrler.MakeClerk(kv.ctrlers)
-
+	kv.scc = shardctrler.MakeClient(ctrlers)
 	kv.applyCh = make(chan raft.ApplyMsg)
 	kv.rf = raft.Make(servers, me, persister, kv.applyCh)
+	kv.sigChans = make(map[int]map[int]chan GeneralOutput)
 
+	for i := 0; i < shardctrler.NShards; i++ {
+		kv.clientSeq[i] = make(map[int64]int64)
+		kv.shardedData[i] = make(map[string]string)
+	}
 
+	data := kv.rf.LastestSnapshot().Data
+	kv.deserializeState(data)
+
+	go kv.executeLoop()
+	go kv.configListenLoop()
+	for i := 0; i < shardctrler.NShards; i++ {
+		go kv.shardOperationLoop(i)
+	}
+
+	Debug("========"+SRV_FORMAT+"STARTED========", kv.gid, kv.me)
 	return kv
 }

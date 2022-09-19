@@ -13,7 +13,7 @@ import "io/ioutil"
 
 const linearizabilityCheckTimeout = 1 * time.Second
 
-func check(t *testing.T, ck *Clerk, key string, value string) {
+func check(t *testing.T, ck *Client, key string, value string) {
 	v := ck.Get(key)
 	if v != value {
 		t.Fatalf("Get(%v): expected:\n%v\nreceived:\n%v", key, value, v)
@@ -91,7 +91,7 @@ func TestStaticShards(t *testing.T) {
 		check(t, ck, ka[i], va[i])
 	}
 
-	fmt.Printf("  ... Passed\n")
+	cfg.end()
 }
 
 func TestJoinLeave(t *testing.T) {
@@ -144,7 +144,7 @@ func TestJoinLeave(t *testing.T) {
 		check(t, ck, ka[i], va[i])
 	}
 
-	fmt.Printf("  ... Passed\n")
+	cfg.end()
 }
 
 func TestSnapshot(t *testing.T) {
@@ -212,7 +212,7 @@ func TestSnapshot(t *testing.T) {
 		check(t, ck, ka[i], va[i])
 	}
 
-	fmt.Printf("  ... Passed\n")
+	cfg.end()
 }
 
 func TestMissChange(t *testing.T) {
@@ -223,7 +223,7 @@ func TestMissChange(t *testing.T) {
 
 	ck := cfg.makeClient()
 
-	cfg.join(0)
+	cfg.join(0) // C1 [0 0 0 0 0 0 0 0 0 0]
 
 	n := 10
 	ka := make([]string, n)
@@ -237,15 +237,15 @@ func TestMissChange(t *testing.T) {
 		check(t, ck, ka[i], va[i])
 	}
 
-	cfg.join(1)
+	cfg.join(1) // C2 [0 0 0 0 0 1 1 1 1 1]
 
 	cfg.ShutdownServer(0, 0)
 	cfg.ShutdownServer(1, 0)
 	cfg.ShutdownServer(2, 0)
 
-	cfg.join(2)
-	cfg.leave(1)
-	cfg.leave(0)
+	cfg.join(2)  // C3 [0 0 0 0 1 1 1 2 2 2]
+	cfg.leave(1) // C4 [0 0 0 0 0 2 2 2 2 2]
+	cfg.leave(0) // C5 [2 2 2 2 2 2 2 2 2 2]
 
 	for i := 0; i < n; i++ {
 		check(t, ck, ka[i], va[i])
@@ -298,7 +298,7 @@ func TestMissChange(t *testing.T) {
 		check(t, ck, ka[i], va[i])
 	}
 
-	fmt.Printf("  ... Passed\n")
+	cfg.end()
 }
 
 func TestConcurrent1(t *testing.T) {
@@ -375,7 +375,7 @@ func TestConcurrent1(t *testing.T) {
 		check(t, ck, ka[i], va[i])
 	}
 
-	fmt.Printf("  ... Passed\n")
+	cfg.end()
 }
 
 //
@@ -406,7 +406,7 @@ func TestConcurrent2(t *testing.T) {
 	var done int32
 	ch := make(chan bool)
 
-	ff := func(i int, ck1 *Clerk) {
+	ff := func(i int, ck1 *Client) {
 		defer func() { ch <- true }()
 		for atomic.LoadInt32(&done) == 0 {
 			x := randstring(1)
@@ -450,7 +450,7 @@ func TestConcurrent2(t *testing.T) {
 		check(t, ck, ka[i], va[i])
 	}
 
-	fmt.Printf("  ... Passed\n")
+	cfg.end()
 }
 
 func TestConcurrent3(t *testing.T) {
@@ -475,7 +475,7 @@ func TestConcurrent3(t *testing.T) {
 	var done int32
 	ch := make(chan bool)
 
-	ff := func(i int, ck1 *Clerk) {
+	ff := func(i int, ck1 *Client) {
 		defer func() { ch <- true }()
 		for atomic.LoadInt32(&done) == 0 {
 			x := randstring(1)
@@ -518,7 +518,7 @@ func TestConcurrent3(t *testing.T) {
 		check(t, ck, ka[i], va[i])
 	}
 
-	fmt.Printf("  ... Passed\n")
+	cfg.end()
 }
 
 func TestUnreliable1(t *testing.T) {
@@ -560,7 +560,7 @@ func TestUnreliable1(t *testing.T) {
 		check(t, ck, ka[i], va[i])
 	}
 
-	fmt.Printf("  ... Passed\n")
+	cfg.end()
 }
 
 func TestUnreliable2(t *testing.T) {
@@ -623,7 +623,7 @@ func TestUnreliable2(t *testing.T) {
 		check(t, ck, ka[i], va[i])
 	}
 
-	fmt.Printf("  ... Passed\n")
+	cfg.end()
 }
 
 func TestUnreliable3(t *testing.T) {
@@ -728,7 +728,7 @@ func TestUnreliable3(t *testing.T) {
 		fmt.Println("info: linearizability check timed out, assuming history is ok")
 	}
 
-	fmt.Printf("  ... Passed\n")
+	cfg.end()
 }
 
 //
@@ -813,7 +813,7 @@ func TestChallenge1Delete(t *testing.T) {
 		check(t, ck, ka[i], va[i])
 	}
 
-	fmt.Printf("  ... Passed\n")
+	cfg.end()
 }
 
 //
@@ -883,7 +883,7 @@ func TestChallenge2Unaffected(t *testing.T) {
 		}
 	}
 
-	fmt.Printf("  ... Passed\n")
+	cfg.end()
 }
 
 //
@@ -944,5 +944,5 @@ func TestChallenge2Partial(t *testing.T) {
 		}
 	}
 
-	fmt.Printf("  ... Passed\n")
+	cfg.end()
 }
