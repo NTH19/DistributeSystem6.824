@@ -3,8 +3,7 @@ make: Entering directory '/home/shijiu/6.824'
  
 Checking that your submission builds correctly...
  
-unknown lab: Makefile
-
+unable to git fetch git://g.csail.mit.edu/6.824-golabs-2021
 make: *** [Makefile:45: check-Makefile] Error 1
 make: Failed to remake makefile 'Makefile'.
 make: *** No targets.  Stop.
