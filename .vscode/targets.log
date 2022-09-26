@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Sep 19 09:47:24 2022
+# Make data base, printed on Mon Sep 26 20:26:25 2022
 
 # Variables
 
@@ -47,7 +47,7 @@ VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # default
 .VARIABLES := 
 # environment
-PWD = /home/shijiu/6.824
+PWD = /home/shijiu/DistributeSystem6.824
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # environment
@@ -61,7 +61,7 @@ VSCODE_CODE_CACHE_PATH = /home/shijiu/.config/Code/CachedData/74b1f979648cc44d38
 # environment
 LANG = C
 # environment
-XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.L9UUS1
+XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.TOMMS1
 # default
 .LOADED := 
 # default
@@ -71,7 +71,7 @@ MAKEFLAGS = pqrR
 # makefile (from 'Makefile', line 6)
 LABS = " lab1 lab2a lab2b lab2c lab2d lab3a lab3b lab4a lab4b "
 # makefile
-CURDIR := /home/shijiu/6.824
+CURDIR := /home/shijiu/DistributeSystem6.824
 # environment
 APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
@@ -99,7 +99,7 @@ SNAP_REEXEC =
 # automatic
 @F = $(notdir $@)
 # environment
-VSCODE_PID = 18949
+VSCODE_PID = 28327
 # environment
 XDG_SESSION_TYPE = wayland
 # automatic
@@ -107,7 +107,7 @@ XDG_SESSION_TYPE = wayland
 # environment
 BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
 # environment
-SESSION_MANAGER = local/shijiu-virtual-machine:@/tmp/.ICE-unix/2196,unix/shijiu-virtual-machine:/tmp/.ICE-unix/2196
+SESSION_MANAGER = local/shijiu-virtual-machine:@/tmp/.ICE-unix/2245,unix/shijiu-virtual-machine:/tmp/.ICE-unix/2245
 # automatic
 *F = $(notdir $*)
 # environment
@@ -157,7 +157,7 @@ LC_TIME = zh_CN.UTF-8
 # environment
 SNAP = /snap/code/108
 # environment
-INVOCATION_ID = c4027253397c47d8b561c536f037e538
+INVOCATION_ID = 8b83f473b178448f80adc41646c2b9e0
 # environment
 SNAP_REVISION = 108
 # environment
@@ -193,7 +193,7 @@ SNAP_ARCH = amd64
 # makefile
 .DEFAULT_GOAL := 
 # environment
-SYSTEMD_EXEC_PID = 2230
+SYSTEMD_EXEC_PID = 2286
 # environment
 DISPLAY = :0
 # environment
@@ -207,11 +207,11 @@ SNAP_DATA = /var/snap/code/108
 # environment
 SNAP_CONTEXT = 3YfFcgE_7u1Ankfb_aep-Bwi9lqCISLs2sUl_on_A_4o6WaYo0Ds
 # environment
-MANAGERPID = 2009
+MANAGERPID = 2045
 # environment
 LC_MEASUREMENT = zh_CN.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 18907
+GIO_LAUNCHED_DESKTOP_FILE_PID = 28281
 # environment
 _ = /snap/code/108/usr/share/code/code
 # environment
@@ -221,7 +221,7 @@ XDG_RUNTIME_DIR = /run/user/1000
 # environment
 GDK_PIXBUF_MODULE_FILE = /home/shijiu/snap/code/common/.cache/gdk-pixbuf-loaders.cache
 # environment
-JOURNAL_STREAM = 8:53135
+JOURNAL_STREAM = 8:56680
 # environment
 GOMODCACHE = /home/shijiu/go/pkg/mod
 # environment
@@ -277,12 +277,12 @@ SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd
 
 # Pattern-specific Variable Values
 
+ 
 # No pattern-specific variable values.
 
 # Directories
 
- 
-# . (device 2051, inode 1717206): 8 files, no impossibilities.
+# . (device 2051, inode 1703960): 8 files, no impossibilities.
 
 # 8 files, no impossibilities in 1 directories.
 
@@ -363,7 +363,7 @@ check-all:
 Makefile: check-Makefile
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: 'Makefile'
-#  Last modified 2022-08-23 19:46:06.86172035
+#  Last modified 2022-09-26 20:25:44.775936571
 #  File has been updated.
 #  Successfully updated.
 #  recipe to execute (from 'Makefile', line 9):
@@ -484,6 +484,6 @@ check-Makefile:
 # strcache performance: lookups = 33 / hit rate = 45%
 # hash-table stats:
 # Load=18/8192=0%, Rehash=0, Collisions=3/33=9%
-# Finished Make data base on Mon Sep 19 09:47:24 2022
+# Finished Make data base on Mon Sep 26 20:26:25 2022
 
  
