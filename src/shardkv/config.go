@@ -62,7 +62,7 @@ type config struct {
 
 	nctrlers      int
 	ctrlerservers []*shardctrler.ShardCtrler
-	mck           *shardctrler.Client
+	mck           *shardctrler.Clerk
 
 	ngroups int
 	n       int // servers per k/v group
@@ -293,7 +293,7 @@ func (cfg *config) StartCtrlerserver(i int) {
 	cfg.net.AddServer(cfg.ctrlername(i), srv)
 }
 
-func (cfg *config) shardclerk() *shardctrler.Client {
+func (cfg *config) shardclerk() *shardctrler.Clerk {
 	// ClientEnds to talk to ctrler service.
 	ends := make([]*labrpc.ClientEnd, cfg.nctrlers)
 	for j := 0; j < cfg.nctrlers; j++ {
@@ -303,7 +303,7 @@ func (cfg *config) shardclerk() *shardctrler.Client {
 		cfg.net.Enable(name, true)
 	}
 
-	return shardctrler.MakeClient(ends)
+	return shardctrler.MakeClerk(ends)
 }
 
 // tell the shardctrler that a group is joining.

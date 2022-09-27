@@ -1,6 +1,7 @@
 package shardkv
 
 import (
+	"fmt"
 	"sync/atomic"
 	"time"
 
@@ -17,7 +18,7 @@ func (kv *ShardKV) lock(namespace string) {
 
 func (kv *ShardKV) unlock() {
 	if d := time.Since(kv.locktime); d >= LOCK_TIMEOUT {
-		kv.error("UNLOCK[%s] too long, cost %+v", kv.lockname, d)
+		fmt.Println("UNLOCK:", kv.lockname, "too long, cost: ", d)
 	}
 	kv.mu.Unlock()
 }
@@ -34,7 +35,7 @@ func key2shard(key string) int {
 func (kv *ShardKV) Kill() {
 	atomic.StoreInt32(&kv.dead, 1)
 	kv.rf.Kill()
-	Debug("========"+SRV_FORMAT+"CRASHED========", kv.gid, kv.me)
+	//Debug("========"+SRV_FORMAT+"CRASHED========", kv.gid, kv.me)
 	// Your code here, if desired.
 }
 
@@ -64,21 +65,21 @@ func init() {
 
 	labgob.Register(GeneralInput{})
 	labgob.Register(GeneralOutput{})
-	labgob.Register(shardctrler.JoinRequest{})
-	labgob.Register(shardctrler.JoinResponse{})
+	labgob.Register(shardctrler.JoinArgs{})
+	labgob.Register(shardctrler.JoinReply{})
 
-	labgob.Register(shardctrler.LeaveRequest{})
-	labgob.Register(shardctrler.LeaveResponse{})
+	labgob.Register(shardctrler.LeaveArgs{})
+	labgob.Register(shardctrler.LeaveReply{})
 
-	labgob.Register(shardctrler.MoveRequest{})
-	labgob.Register(shardctrler.MoveResponse{})
+	labgob.Register(shardctrler.MoveArgs{})
+	labgob.Register(shardctrler.MoveReply{})
 
-	labgob.Register(shardctrler.QueryRequest{})
+	labgob.Register(shardctrler.QueryArgs{})
 	labgob.Register(shardctrler.QueryResponse{})
 
 	labgob.Register(shardctrler.Config{})
 	labgob.Register(map[int][]string{})
 	labgob.Register([]int{})
 
-	labgob.Register(shardctrler.Movement{})
+	labgob.Register(shardctrler.MoveAc{})
 }

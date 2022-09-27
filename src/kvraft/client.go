@@ -1,17 +1,21 @@
 package kvraft
 
 import (
+	"strconv"
 	"time"
 
 	"6.824/labrpc"
 )
 
+var (
+	KVClientGlobalId int64
+)
+
 type Clerk struct {
 	servers []*labrpc.ClientEnd
-	size int
-	ClerkId
+	size    int
+	ClerkInfo
 	recentLeader int
-	// You will have to modify this struct.
 }
 
 func MakeClerk(servers []*labrpc.ClientEnd) *Clerk {
@@ -21,6 +25,10 @@ func MakeClerk(servers []*labrpc.ClientEnd) *Clerk {
 	ck.size = len(ck.servers)
 	// fmt.Println("NEW CLIENT", ck.Uid)
 	return ck
+}
+func GenerateClerkId() string {
+	KVClientGlobalId++
+	return strconv.FormatInt(KVClientGlobalId, 10)
 }
 
 //
@@ -41,7 +49,7 @@ func (ck *Clerk) Get(key string) string {
 
 	req := GetRequest{
 		Key: key,
-		ClerkId: ClerkId{
+		ClerkInfo: ClerkInfo{
 			Uid: ck.Uid,
 			Seq: ck.Seq,
 		},
@@ -49,14 +57,12 @@ func (ck *Clerk) Get(key string) string {
 
 	i := ck.recentLeader
 	for {
-		// try each known server.
 		for range ck.servers {
-			ck.Log("开始Get%+v [KV %d]", req, i)
+			//ck.Log("开始Get%+v [KV %d]", req, i)
 			var resp GetResponse
 			ck.servers[i].Call("KVServer.Get", &req, &resp)
 			if resp.RPCInfo == SUCCESS {
 				ck.recentLeader = i
-				ck.Log("成功Get%+v", req)
 				return resp.Value
 			}
 			i = (i + 1) % ck.size
@@ -80,10 +86,10 @@ func (ck *Clerk) PutAppend(key string, value string, op string) {
 	ck.Seq++
 
 	req := PutAppendRequest{
-		Key: key,
-		Value: value,
+		Key:    key,
+		Value:  value,
 		OpType: op,
-		ClerkId: ClerkId{
+		ClerkInfo: ClerkInfo{
 			Uid: ck.Uid,
 			Seq: ck.Seq,
 		},
@@ -93,15 +99,13 @@ func (ck *Clerk) PutAppend(key string, value string, op string) {
 	for {
 		// try each known server.
 		for range ck.servers {
-			ck.Log("开始PutAppend%+v [KV %d]", req, i)
+			//ck.Log("开始PutAppend%+v [KV %d]", req, i)
 			var resp GetResponse
 			ck.servers[i].Call("KVServer.PutAppend", &req, &resp)
 			if resp.RPCInfo == SUCCESS {
 				ck.recentLeader = i
-				ck.Log("成功PutAppend%+v", req)
 				return
 			} else if resp.RPCInfo == DUPLICATE_REQUEST {
-				ck.Log("幂等拦截%+v", req)
 				return
 			}
 			i = (i + 1) % ck.size

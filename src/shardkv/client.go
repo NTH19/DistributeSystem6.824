@@ -19,14 +19,22 @@ import (
 
 type Client struct {
 	mu       sync.Mutex
-	scc      *shardctrler.Client
+	scc      *shardctrler.Clerk
 	conf     shardctrler.Config
 	make_end func(string) *labrpc.ClientEnd
 	// You will have to modify this struct.
 	ClientInfo
 }
 
-const CLIENT_REQUEST_INTERVAL = 100 * time.Millisecond // 客户端发起新一轮请求的间隔时间
+const CLIENT_REQUEST_INTERVAL = 100 * time.Millisecond
+
+var (
+	kvClientGlobalId int64
+)
+
+func generateclientId() int64 {
+	return atomic.AddInt64(&kvClientGlobalId, 1)
+}
 
 //
 // the tester calls MakeClerk.
@@ -39,7 +47,7 @@ const CLIENT_REQUEST_INTERVAL = 100 * time.Millisecond // 客户端发起新一�
 //
 func MakeClerk(ctrlers []*labrpc.ClientEnd, make_end func(string) *labrpc.ClientEnd) *Client {
 	ck := new(Client)
-	ck.scc = shardctrler.MakeClient(ctrlers)
+	ck.scc = shardctrler.MakeClerk(ctrlers)
 	ck.make_end = make_end
 	// You'll have to add code here.
 	ck.Uid = generateclientId()
@@ -61,8 +69,8 @@ func (c *Client) Get(key string) string {
 		},
 	}
 	s := key2shard(key)
-	c.info("开始Get %+v", req)
-	defer c.info("成功Get %+v", req)
+	//c.info("开始Get %+v", req)
+	//defer c.info("成功Get %+v", req)
 	for {
 		c.mu.Lock()
 		gid := c.conf.Shards[s]
@@ -85,7 +93,6 @@ func (c *Client) Get(key string) string {
 			}
 		}
 		time.Sleep(CLIENT_REQUEST_INTERVAL)
-		// ask controler for the latest configuration.
 		config := c.scc.Query(-1)
 		c.mu.Lock()
 		c.conf = config
@@ -109,8 +116,8 @@ func (c *Client) PutAppend(key string, value string, op string) {
 		OpType: op,
 	}
 	s := key2shard(key)
-	c.info("开始PutAppend %+v", req)
-	defer c.info("成功PutAppend %+v", req)
+	//c.info("开始PutAppend %+v", req)
+	//defer c.info("成功PutAppend %+v", req)
 	for {
 		c.mu.Lock()
 		gid := c.conf.Shards[s]
@@ -135,7 +142,6 @@ func (c *Client) PutAppend(key string, value string, op string) {
 			}
 		}
 		time.Sleep(CLIENT_REQUEST_INTERVAL)
-		// ask controler for the latest configuration.
 		config := c.scc.Query(-1)
 		c.mu.Lock()
 		c.conf = config
@@ -148,12 +154,4 @@ func (ck *Client) Put(key string, value string) {
 }
 func (ck *Client) Append(key string, value string) {
 	ck.PutAppend(key, value, "Append")
-}
-
-var (
-	kvClientGlobalId int64
-)
-
-func generateclientId() int64 {
-	return atomic.AddInt64(&kvClientGlobalId, 1)
 }
